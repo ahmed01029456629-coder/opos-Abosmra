@@ -596,7 +596,7 @@ function loadState(){
     } else {
       // Seed if empty
       dbState = {
-        cashiers: [{id:'admin',name:'مدير النظام',password:'admin',role:'admin'},{id:uid(),name:'أحمد محمد',password:'123',role:'cashier'},{id:uid(),name:'سارة علي',password:'123',role:'cashier'}],
+        cashiers: [{id:'admin',name:'Ahmed',password:'admin',role:'admin'},{id:uid(),name:'أحمد محمد',password:'123',role:'cashier'},{id:uid(),name:'سارة علي',password:'123',role:'cashier'}],
         products: [{id:uid(),name:'مياه معدنية 500مل',price:3.5,barcode:'6001234567890'},{id:uid(),name:'علبة عصير برتقال',price:8,barcode:'6001234567891'},{id:uid(),name:'صنف بدون باركود',price:10,barcode:''}],
         sales: [], returns: []
       };
@@ -632,14 +632,25 @@ function showLogin(){
   sel.innerHTML=dbState.cashiers.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
   $('#login-pass').value='';$('#login-error').textContent='';
 }
+
 function login(){
-  const id=$('#login-user').value,pass=$('#login-pass').value;
-  const user=dbState.cashiers.find(c=>c.id===id);
-  if(user&&user.password===pass){
-    currentUser=user;
-    $('#login-screen').style.display='none';setupUIForUser();
-  }else{$('#login-error').textContent='كلمة المرور غير صحيحة';beep('error')}
+  // إزالة المسافات الزائدة وتحويل النص لحروف صغيرة لتجنب مشاكل الكتابة
+  const name = $('#login-user').value.trim().toLowerCase();
+  const pass = $('#login-pass').value.trim();
+  
+  // البحث عن المستخدم وتجاهل حالة الأحرف
+  const user = dbState.cashiers.find(c => c.name.trim().toLowerCase() === name);
+  
+  if(user && user.password === pass){
+    currentUser = user;
+    $('#login-screen').style.display = 'none';
+    setupUIForUser();
+  } else {
+    $('#login-error').textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+    beep('error');
+  }
 }
+
 function logout(){currentUser=null;$('#hdr-user-name').textContent='زائر';$('#hdr-user-avatar').textContent='؟';showLogin()}
 function setupUIForUser(){
   const user=currentUser;
