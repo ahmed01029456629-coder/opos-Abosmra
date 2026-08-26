@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>نظام نقاط البيع وإدارة المرتجعات (سحابي)</title>
- <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2310b981'/%3E%3Cstop%20offset='1'%20stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='url(%23g)'/%3E%3Cg%20transform='translate(12,%2012)%20scale(1.7)'%20fill='none'%20stroke='white'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='9'%20cy='21'%20r='1'/%3E%3Ccircle%20cx='20'%20cy='21'%20r='1'/%3E%3Cpath%20d='M1%201h4l2.68%2013.39a2%202%200%200%200%202%201.61h9.72a2%202%200%200%200%202-1.61L23%206H6'/%3E%3C/g%3E%3C/svg%3E" /> 
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%2310b981'/%3E%3Cstop%20offset='1'%20stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='url(%23g)'/%3E%3Cg%20transform='translate(12,%2012)%20scale(1.7)'%20fill='none'%20stroke='white'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Ccircle%20cx='9'%20cy='21'%20r='1'/%3E%3Ccircle%20cx='20'%20cy='21'%20r='1'/%3E%3Cpath%20d='M1%201h4l2.68%2013.39a2%202%200%200%200%202%201.61h9.72a2%202%200%200%200%202-1.61L23%206H6'/%3E%3C/g%3E%3C/svg%3E" />
+
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -416,7 +417,7 @@ tbody tr:last-child td{border-bottom:none}
         <div class="table-wrap">
           <table>
             <thead><tr><th>#</th><th>رقم العملية</th><th>الأصناف</th><th>عدد القطع</th><th>المسترد</th><th>التاريخ والوقت</th></tr></thead>
-            <tbody id="ret-user-returns-tbody"><tr><td colspan="6" class="empty-row">لا توجد مرتجعات لهذا الكاشير بعد</td></tr></tbody>
+            <tbody id="ret-user-returns-tbody"><tr><td colspan="6" class="empty-row">لا توجد مرتجعات لهذا الكاشير قبل</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -500,14 +501,14 @@ tbody tr:last-child td{border-bottom:none}
           <div class="form-group"><label>1. اسم الصنف <span class="req">*</span></label><input type="text" id="np-name" placeholder="مثال: مياه معدنية 500مل"></div>
           <div class="form-row-2">
             <div class="form-group"><label>2. سعر البيع <span class="req">*</span></label><input type="number" id="np-price" step="0.01" min="0" placeholder="0.00"></div>
-            <div class="form-group"><label>3. الباركود <span style="color:var(--text-dim);font-weight:400">(اختياري)</span></label><input type="text" id="np-barcode" placeholder="اتركه فارغاً إن لم يوجد"></div>
+            <div class="form-group"><label>3. الباركودات <span style="color:var(--text-dim);font-weight:400">(افصل بينها بفاصلة ,)</span></label><input type="text" id="np-barcode" placeholder="مثال: 111, 222, 333"></div>
           </div>
           <div class="form-actions"><button class="btn btn-success" id="add-product-btn">➕ إضافة الصنف</button><button class="btn btn-ghost" id="clear-product-form">مسح الحقول</button></div>
         </div>
 
         <div class="card form-section">
           <h3>📥 استيراد جماعي (CSV)</h3>
-          <div class="help-block"><span class="ico">ℹ️</span><span>يدعم آلاف الأصناف. الترتيب: <strong>الصنف، سعر البيع، الباركود (اختياري)</strong></span></div>
+          <div class="help-block"><span class="ico">ℹ️</span><span>يدعم آلاف الأصناف. الترتيب: <strong>الصنف، سعر البيع، الباركود (يمكن وضع أكثر من باركود مفصولة بفاصلة)</strong></span></div>
           <div class="file-upload" id="import-file-zone"><input type="file" id="import-file-input" accept=".csv,.txt"><div class="upload-icon">📄</div><div class="upload-text">اختر ملف CSV للاستيراد</div><div class="upload-hint">يدعم الفواصل (,) أو (;) - ترميز UTF-8</div></div>
           <div class="csv-format">التنسيق: <code>الصنف,سعر البيع,الباركود</code></div>
           <div class="form-actions"><button class="btn btn-primary" id="import-csv-btn">📥 تنفيذ الاستيراد</button><button class="btn btn-ghost btn-sm" id="download-sample-csv">⬇️ تحميل نموذج</button></div>
@@ -515,9 +516,20 @@ tbody tr:last-child td{border-bottom:none}
 
         <div class="card form-section">
           <h3>💱 تحديث جماعي للأسعار</h3>
-          <div class="help-block"><span class="ico">ℹ️</span><span>إذا كان الصنف مسجلاً بدون باركود، ووضعت له باركود في هذا الملف، سيتم تحديث الباركود تلقائياً.</span></div>
+          <div class="help-block"><span class="ico">ℹ️</span><span>يطابق الأصناف عبر <strong>الاسم أو أي من الباركودات</strong> ويحدّث سعر البيع فقط.</span></div>
           <div class="file-upload" id="price-file-zone"><input type="file" id="price-file-input" accept=".csv,.txt"><div class="upload-icon">💱</div><div class="upload-text">اختر ملف CSV لتحديث الأسعار</div><div class="upload-hint">التنسيق: الصنف, السعر الجديد, الباركود</div></div>
           <div class="form-actions"><button class="btn btn-warning" id="update-prices-btn">💱 تنفيذ التحديث</button></div>
+        </div>
+
+        <div class="card form-section">
+          <h3>🗃️ إدارة البيانات (نسخ احتياطي)</h3>
+          <div class="help-block"><span class="ico">⚠️</span><span>النسخ الاحتياطي يحفظ كل الأصناف والمبيعات والكاشيرات في ملف واحد. زر المسح يتطلب كلمة مرور المدير للتأكيد.</span></div>
+          <div class="form-actions" style="flex-direction:column;align-items:stretch;gap:8px">
+            <button class="btn btn-ghost" id="export-all-btn">⬇️ تصدير نسخة احتياطية (JSON)</button>
+            <button class="btn btn-ghost" id="import-all-btn">⬆️ استيراد نسخة احتياطية (JSON)</button>
+            <input type="file" id="import-all-input" accept=".json" style="display:none">
+            <button class="btn btn-danger" id="clear-all-btn">🗑️ مسح جميع البيانات</button>
+          </div>
         </div>
       </div>
     </section>
@@ -532,7 +544,6 @@ tbody tr:last-child td{border-bottom:none}
 
 // ==========================================
 // 1. Firebase Cloud Sync Configuration
-// تم وضع الكود السري الخاص بك مباشرة هنا
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyDmfhnOVeMx_SPo7BxZ5dvtCY4POkCL4ys",
@@ -595,10 +606,9 @@ function loadState(){
         if (!c.role) c.role = 'cashier';
       });
     } else {
-      // Seed if empty
       dbState = {
-        cashiers: [{id:'admin',name:'Ahmed',password:'admin',role:'admin'},{id:uid(),name:'أحمد محمد',password:'123',role:'cashier'},{id:uid(),name:'سارة علي',password:'123',role:'cashier'}],
-        products: [{id:uid(),name:'مياه معدنية 500مل',price:3.5,barcode:'6001234567890'},{id:uid(),name:'علبة عصير برتقال',price:8,barcode:'6001234567891'},{id:uid(),name:'صنف بدون باركود',price:10,barcode:''}],
+        cashiers: [{id:'admin',name:'مدير النظام',password:'admin',role:'admin'},{id:uid(),name:'أحمد محمد',password:'123',role:'cashier'},{id:uid(),name:'سارة علي',password:'123',role:'cashier'}],
+        products: [{id:uid(),name:'مياه معدنية 500مل',price:3.5,barcode:'6001234567890, 6001234567891'},{id:uid(),name:'علبة عصير برتقال',price:8,barcode:'6001234567892'},{id:uid(),name:'صنف بدون باركود',price:10,barcode:''}],
         sales: [], returns: []
       };
       saveState();
@@ -617,7 +627,22 @@ function loadState(){
   });
 }
 
-function rebuildIndex(){productIndex.byBarcode.clear();productIndex.byName.clear();dbState.products.forEach(p=>{if(p.barcode&&String(p.barcode).trim()!==''){productIndex.byBarcode.set(String(p.barcode).trim(),p)}productIndex.byName.set(p.name.trim().toLowerCase(),p)})}
+// ==========================================
+// 3. Indexing (يدعم أكثر من باركود)
+// ==========================================
+function rebuildIndex(){
+  productIndex.byBarcode.clear();
+  productIndex.byName.clear();
+  dbState.products.forEach(p => {
+    if(p.barcode && String(p.barcode).trim() !== ''){
+      // تقسيم الباركودات بفاصلة وإضافتها كلها للفهرس
+      String(p.barcode).split(',').map(c => c.trim()).filter(c => c !== '').forEach(code => {
+        productIndex.byBarcode.set(code, p);
+      });
+    }
+    productIndex.byName.set(p.name.trim().toLowerCase(), p);
+  });
+}
 
 function toast(m,t='info',d=3000){const c=$('#toast-container'),e=document.createElement('div');e.className=`toast ${t}`;e.innerHTML=`<span class="toast-icon">${{success:'✓',danger:'✕',warning:'⚠',info:'ℹ'}[t]}</span><span>${esc(m)}</span>`;c.appendChild(e);setTimeout(()=>{e.style.animation='toastOut .3s forwards';setTimeout(()=>e.remove(),300)},d)}
 function confirmM(t,m,ct='تأكيد',cc='btn-danger'){return new Promise(r=>{const c=$('#modal-container'),b=document.createElement('div');b.className='modal-backdrop';b.innerHTML=`<div class="modal"><h3>${esc(t)}</h3><p>${esc(m)}</p><div class="modal-actions"><button class="btn ${cc}" data-act="ok">${esc(ct)}</button><button class="btn btn-ghost" data-act="cancel">إلغاء</button></div></div>`;c.appendChild(b);b.addEventListener('click',e=>{if(e.target===b||e.target.dataset.act==='cancel'){b.remove();r(false)}else if(e.target.dataset.act==='ok'){b.remove();r(true)}})})}
@@ -629,19 +654,13 @@ function downloadF(f,c,m='text/csv;charset=utf-8'){const b=new Blob([c],{type:m}
 
 function showLogin(){
   $('#login-screen').style.display='flex';
-  const sel=$('#login-user');
-  sel.innerHTML=dbState.cashiers.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  $('#login-user').value=''; 
   $('#login-pass').value='';$('#login-error').textContent='';
 }
-
 function login(){
-  // إزالة المسافات الزائدة وتحويل النص لحروف صغيرة لتجنب مشاكل الكتابة
   const name = $('#login-user').value.trim().toLowerCase();
   const pass = $('#login-pass').value.trim();
-  
-  // البحث عن المستخدم وتجاهل حالة الأحرف
   const user = dbState.cashiers.find(c => c.name.trim().toLowerCase() === name);
-  
   if(user && user.password === pass){
     currentUser = user;
     $('#login-screen').style.display = 'none';
@@ -651,7 +670,6 @@ function login(){
     beep('error');
   }
 }
-
 function logout(){currentUser=null;$('#hdr-user-name').textContent='زائر';$('#hdr-user-avatar').textContent='؟';showLogin()}
 function setupUIForUser(){
   const user=currentUser;
@@ -684,24 +702,66 @@ function renderCT(){
 }
 function renderFilters(){['#sales-log-cashier','#returns-log-cashier'].forEach(id=>{const el=$(id),v=el.value;el.innerHTML='<option value="">كل الكاشيرات</option>'+dbState.cashiers.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');el.value=v;})}
 
+// ==========================================
+// 4. Products Logic (تدعم الباركودات المتعددة)
+// ==========================================
 function findP(input){const v=input.trim();if(!v)return null;let p=productIndex.byBarcode.get(v);if(p)return p;p=productIndex.byName.get(v.toLowerCase());if(p)return p;const lv=v.toLowerCase();return dbState.products.find(p=>p.name.toLowerCase().includes(lv))||null}
+
 function addP(){
   const n=$('#np-name').value.trim(),p=cleanN($('#np-price').value),b=$('#np-barcode').value.trim();
   if(!n||p<=0){toast('أدخل اسم الصنف وسعراً صحيحاً','warning');return}
-  if(b&&productIndex.byBarcode.has(b)){toast('الباركود موجود مسبقاً','warning');return}
-  if(!b&&productIndex.byName.has(n.toLowerCase())){toast('اسم الصنف موجود مسبقاً','warning');return}
-  const pr={id:uid(),name:n,price:p,barcode:b};dbState.products.push(pr);saveState();
-  ['#np-name','#np-price','#np-barcode'].forEach(s=>$(s).value='');$('#np-name').focus();toast(`تمت إضافة: ${n}`,'success');beep();
+  
+  // التحقق من الباركودات المتعددة
+  if(b){
+    const codes = b.split(',').map(c=>c.trim()).filter(c=>c!=='');
+    for(let code of codes){
+      if(productIndex.byBarcode.has(code)){toast(`الباركود ${code} موجود مسبقاً`,'warning');return}
+    }
+  } else if(productIndex.byName.has(n.toLowerCase())){
+    toast('اسم الصنف موجود مسبقاً','warning');return;
+  }
+  
+  const pr={id:uid(),name:n,price:p,barcode:b};
+  dbState.products.push(pr);
+  rebuildIndex(); // تحديث الفهرس بالباركودات الجديدة
+  saveState();
+  ['#np-name','#np-price','#np-barcode'].forEach(s=>$(s).value='');
+  $('#np-name').focus();toast(`تمت إضافة: ${n}`,'success');beep();
+  renderPL();
 }
+
 function delP(id){const p=dbState.products.find(x=>x.id===id);if(!p)return;confirmM('تأكيد الحذف',`حذف "${p.name}"؟`,'حذف').then(ok=>{if(!ok)return;dbState.products=dbState.products.filter(x=>x.id!==id);saveState();toast('تم الحذف','success');})}
+
 function saveProd(id){
-  const row=document.querySelector(`tr[data-id="${id}"]`);if(!row)return;const p=dbState.products.find(x=>x.id===id);if(!p)return;
-  const newName=row.querySelector('.edit-name').value.trim();const newPrice=cleanN(row.querySelector('.edit-price').value);const newBarcode=row.querySelector('.edit-barcode').value.trim();
+  const row=document.querySelector(`tr[data-id="${id}"]`);if(!row)return;
+  const p=dbState.products.find(x=>x.id===id);if(!p)return;
+  const newName=row.querySelector('.edit-name').value.trim();
+  const newPrice=cleanN(row.querySelector('.edit-price').value);
+  const newBarcode=row.querySelector('.edit-barcode').value.trim();
+  
   if(!newName||newPrice<=0){toast('بيانات غير صحيحة','warning');return}
-  if(newBarcode&&newBarcode!==p.barcode){const exist=dbState.products.find(x=>x.id!==id&&x.barcode===newBarcode);if(exist){toast('الباركود مستخدم لصنف آخر','warning');return}}
-  if(newName.toLowerCase()!==p.name.toLowerCase()){const exist=dbState.products.find(x=>x.id!==id&&x.name.toLowerCase()===newName.toLowerCase());if(exist){toast('اسم الصنف مستخدم لصنف آخر','warning');return}}
-  p.name=newName;p.price=newPrice;p.barcode=newBarcode;saveState();toast('تم تحديث الصنف','success');beep();
+  
+  // التحقق من الباركودات المتعددة
+  if(newBarcode){
+    const newCodes = newBarcode.split(',').map(c=>c.trim()).filter(c=>c!=='');
+    for(let code of newCodes){
+      // التحقق إذا كان الباركود مستخدماً في صنف آخر
+      const exist = dbState.products.find(x => x.id !== id && x.barcode && String(x.barcode).split(',').map(c=>c.trim()).includes(code));
+      if(exist){toast(`الباركود ${code} مستخدم لصنف آخر`,'warning');return}
+    }
+  }
+  
+  if(newName.toLowerCase()!==p.name.toLowerCase()){
+    const exist=dbState.products.find(x=>x.id!==id&&x.name.toLowerCase()===newName.toLowerCase());
+    if(exist){toast('اسم الصنف مستخدم لصنف آخر','warning');return}
+  }
+  
+  p.name=newName;p.price=newPrice;p.barcode=newBarcode;
+  rebuildIndex(); // إعادة بناء الفهرس لتحديث الباركودات
+  saveState();
+  toast('تم تحديث الصنف','success');beep();
 }
+
 function renderPL(){
   const t=$('#prod-tbody'),thead=$('#prod-thead'),s=($('#prod-search').value||'').trim().toLowerCase();
   let f=dbState.products;if(s)f=dbState.products.filter(p=>p.name.toLowerCase().includes(s)||String(p.price).includes(s)||String(p.barcode).includes(s));
@@ -709,11 +769,11 @@ function renderPL(){
   const tp=Math.ceil(f.length/PAGE_SIZE)||1;prodCurrentPage=Math.min(prodCurrentPage,tp);const start=(prodCurrentPage-1)*PAGE_SIZE,ps=f.slice(start,start+PAGE_SIZE);
   
   if(currentUser && currentUser.role==='admin'){
-    thead.innerHTML='<tr><th>#</th><th>الصنف</th><th>السعر</th><th>الباركود</th><th>إجراءات</th></tr>';
+    thead.innerHTML='<tr><th>#</th><th>الصنف</th><th>السعر</th><th>الباركودات</th><th>إجراءات</th></tr>';
     if(ps.length===0){t.innerHTML=dbState.products.length===0?'<tr><td colspan="5" class="empty-row">أضف منتجات من قسم الإدارة</td></tr>':'<tr><td colspan="5" class="empty-row">لا توجد نتائج</td></tr>'}
     else{t.innerHTML=ps.map((p,i)=>`<tr data-id="${p.id}"><td class="t-num">${start+i+1}</td><td><input type="text" class="edit-input edit-name" value="${esc(p.name)}"></td><td style="width:120px"><input type="number" class="edit-input edit-price" step="0.01" value="${p.price}"></td><td style="width:180px"><input type="text" class="edit-input edit-barcode" value="${esc(p.barcode)}"></td><td style="width:140px"><button class="btn btn-success btn-sm" onclick="saveProd('${p.id}')">💾 حفظ</button><button class="btn btn-danger btn-sm" onclick="delP('${p.id}')">🗑️ حذف</button></td></tr>`).join('')}
   }else{
-    thead.innerHTML='<tr><th>#</th><th>الصنف</th><th>السعر</th><th>الباركود</th></tr>';
+    thead.innerHTML='<tr><th>#</th><th>الصنف</th><th>السعر</th><th>الباركودات</th></tr>';
     if(ps.length===0){t.innerHTML=dbState.products.length===0?'<tr><td colspan="4" class="empty-row">لا توجد أصناف</td></tr>':'<tr><td colspan="4" class="empty-row">لا توجد نتائج</td></tr>'}
     else{t.innerHTML=ps.map((p,i)=>`<tr><td class="t-num">${start+i+1}</td><td><strong>${esc(p.name)}</strong></td><td class="t-money">${fmtM(p.price)}</td><td><code style="font-size:12px">${esc(p.barcode||'—')}</code></td></tr>`).join('')}
   }
@@ -735,7 +795,6 @@ function clrR(){if(!returnCart.length)return;confirmM('تفريغ القائمة
 function renderRC(){const l=$('#ret-cart-list');l.innerHTML=returnCart.length?returnCart.map((it,i)=>`<div class="cart-item"><div class="cart-item-info"><div class="cart-item-name">${esc(it.name)}</div><div class="cart-item-meta">المسترد: <span class="price">${fmtM(it.price)}</span> • <code>${esc(it.barcode||'—')}</code></div></div><div class="qty-control"><button class="qty-btn" onclick="chRQ(${i},-1)">−</button><span class="qty-display">${it.qty}</span><button class="qty-btn" onclick="chRQ(${i},1)">+</button></div><div style="display:flex;align-items:center;gap:8px"><div class="cart-item-total">${fmtM(it.price*it.qty)}</div><button class="cart-item-remove" onclick="rmR(${i})">✕</button></div></div>`).join(''):'<div class="cart-empty"><div class="emoji">↩️</div><div>قائمة المرتجع فارغة</div></div>';const tq=returnCart.reduce((s,c)=>s+c.qty,0),st=returnCart.reduce((s,c)=>s+c.price*c.qty,0);$('#ret-items-count').textContent=returnCart.length;$('#ret-qty-count').textContent=tq;$('#ret-subtotal').textContent=fmtM(st);$('#ret-total').textContent=fmtM(st);$('#ret-invoice-no').textContent=returnCart.length?'RET-'+Date.now().toString().slice(-6):'—';$('#ret-complete-btn').disabled=!returnCart.length}
 function compR(){if(!returnCart.length){toast('القائمة فارغة','warning');return}const a=getC();if(!a){toast('خطأ: لا يوجد كاشير نشط','warning');return}const t=returnCart.reduce((s,c)=>s+c.price*c.qty,0),tq=returnCart.reduce((s,c)=>s+c.qty,0);dbState.returns.push({id:uid(),invoiceNo:'RET-'+Date.now().toString().slice(-8),cashierId:a.id,cashierName:a.name,items:returnCart.map(c=>({name:c.name,price:c.price,qty:c.qty,barcode:c.barcode})),total:t,totalQty:tq,timestamp:Date.now()});saveState();returnCart=[];toast(`تم تأكيد المرتجع بمبلغ ${fmtM(t)}`,'success');beep('warning');$('#ret-scan-input').focus()}
 
-// Helper to render items table inside logs
 function renderItemsTable(items) {
     if (!items || items.length === 0) return '—';
     let html = `<table style="width:100%; border-collapse: collapse; margin-top:4px; background:var(--primary); border-radius:6px; overflow:hidden;">`;
@@ -757,87 +816,138 @@ function renderItemsTable(items) {
     return html;
 }
 
-// 1. مبيعات الكاشير الحالي
 function renderPUS(){
-    const a=getC();
-    $('#pos-user-name').textContent=a?a.name:'—';
-    const t=$('#pos-user-sales-tbody'),
-    us=dbState.sales.filter(s=>s.cashierId===currentUser?.id).sort((a,b)=>b.timestamp-a.timestamp);
+    const a=getC();$('#pos-user-name').textContent=a?a.name:'—';
+    const t=$('#pos-user-sales-tbody'),us=dbState.sales.filter(s=>s.cashierId===currentUser?.id).sort((a,b)=>b.timestamp-a.timestamp);
     $('#pos-user-total').textContent=fmtM(us.reduce((s,x)=>s+x.total,0));
-    t.innerHTML=us.length?us.map((s,i)=>`<tr>
-        <td class="t-num">${i+1}</td>
-        <td><code>${esc(s.invoiceNo)}</code></td>
-        <td>${renderItemsTable(s.items)}</td>
-        <td class="t-num">${s.totalQty}</td>
-        <td class="t-money">${fmtM(s.total)}</td>
-        <td class="t-num">${fmtD(s.timestamp)}</td>
-    </tr>`).join(''):'<tr><td colspan="6" class="empty-row">لا توجد مبيعات لهذا الكاشير</td></tr>';
+    t.innerHTML=us.length?us.map((s,i)=>`<tr><td class="t-num">${i+1}</td><td><code>${esc(s.invoiceNo)}</code></td><td>${renderItemsTable(s.items)}</td><td class="t-num">${s.totalQty}</td><td class="t-money">${fmtM(s.total)}</td><td class="t-num">${fmtD(s.timestamp)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty-row">لا توجد مبيعات لهذا الكاشير</td></tr>';
 }
-
-// 2. مرتجعات الكاشير الحالي
 function renderRUR(){
-    const a=getC();
-    $('#ret-user-name').textContent=a?a.name:'—';
-    const t=$('#ret-user-returns-tbody'),
-    ur=dbState.returns.filter(r=>r.cashierId===currentUser?.id).sort((a,b)=>b.timestamp-a.timestamp);
+    const a=getC();$('#ret-user-name').textContent=a?a.name:'—';
+    const t=$('#ret-user-returns-tbody'),ur=dbState.returns.filter(r=>r.cashierId===currentUser?.id).sort((a,b)=>b.timestamp-a.timestamp);
     $('#ret-user-total').textContent=fmtM(ur.reduce((s,x)=>s+x.total,0));
-    t.innerHTML=ur.length?ur.map((r,i)=>`<tr>
-        <td class="t-num">${i+1}</td>
-        <td><code>${esc(r.invoiceNo)}</code></td>
-        <td>${renderItemsTable(r.items)}</td>
-        <td class="t-num">${r.totalQty}</td>
-        <td class="t-money danger">${fmtM(r.total)}</td>
-        <td class="t-num">${fmtD(r.timestamp)}</td>
-    </tr>`).join(''):'<tr><td colspan="6" class="empty-row">لا توجد مرتجعات لهذا الكاشير</td></tr>';
+    t.innerHTML=ur.length?ur.map((r,i)=>`<tr><td class="t-num">${i+1}</td><td><code>${esc(r.invoiceNo)}</code></td><td>${renderItemsTable(r.items)}</td><td class="t-num">${r.totalQty}</td><td class="t-money danger">${fmtM(r.total)}</td><td class="t-num">${fmtD(r.timestamp)}</td></tr>`).join(''):'<tr><td colspan="6" class="empty-row">لا توجد مرتجعات لهذا الكاشير</td></tr>';
 }
-
-// 3. السجل الشامل للمبيعات
 function renderSL(){
     const s=($('#sales-log-search').value||'').trim().toLowerCase(),cf=$('#sales-log-cashier').value;
     let f=dbState.sales.slice().sort((a,b)=>b.timestamp-a.timestamp);
     if(cf)f=f.filter(x=>x.cashierId===cf);
     if(s)f=f.filter(x=>x.invoiceNo.toLowerCase().includes(s)||x.cashierName.toLowerCase().includes(s)||x.items.some(it=>it.name.toLowerCase().includes(s)));
-    $('#sales-log-count').textContent=f.length;
-    $('#sales-log-total').textContent=fmtM(f.reduce((s,x)=>s+x.total,0));
-    $('#sales-log-tbody').innerHTML=f.length?f.map((s,i)=>`<tr>
-        <td class="t-num">${i+1}</td>
-        <td><code>${esc(s.invoiceNo)}</code></td>
-        <td><span class="t-badge success">${esc(s.cashierName)}</span></td>
-        <td>${renderItemsTable(s.items)}</td>
-        <td class="t-num">${s.totalQty}</td>
-        <td class="t-money">${fmtM(s.total)}</td>
-        <td class="t-num">${fmtD(s.timestamp)}</td>
-    </tr>`).join(''):'<tr><td colspan="7" class="empty-row">لا توجد مبيعات</td></tr>';
+    $('#sales-log-count').textContent=f.length;$('#sales-log-total').textContent=fmtM(f.reduce((s,x)=>s+x.total,0));
+    $('#sales-log-tbody').innerHTML=f.length?f.map((s,i)=>`<tr><td class="t-num">${i+1}</td><td><code>${esc(s.invoiceNo)}</code></td><td><span class="t-badge success">${esc(s.cashierName)}</span></td><td>${renderItemsTable(s.items)}</td><td class="t-num">${s.totalQty}</td><td class="t-money">${fmtM(s.total)}</td><td class="t-num">${fmtD(s.timestamp)}</td></tr>`).join(''):'<tr><td colspan="7" class="empty-row">لا توجد مبيعات</td></tr>';
 }
-
-// 4. السجل الشامل للمرتجعات
 function renderRL(){
     const s=($('#returns-log-search').value||'').trim().toLowerCase(),cf=$('#returns-log-cashier').value;
     let f=dbState.returns.slice().sort((a,b)=>b.timestamp-a.timestamp);
     if(cf)f=f.filter(x=>x.cashierId===cf);
     if(s)f=f.filter(x=>x.invoiceNo.toLowerCase().includes(s)||x.cashierName.toLowerCase().includes(s)||x.items.some(it=>it.name.toLowerCase().includes(s)));
-    $('#returns-log-count').textContent=f.length;
-    $('#returns-log-total').textContent=fmtM(f.reduce((s,x)=>s+x.total,0));
-    $('#returns-log-tbody').innerHTML=f.length?f.map((r,i)=>`<tr>
-        <td class="t-num">${i+1}</td>
-        <td><code>${esc(r.invoiceNo)}</code></td>
-        <td><span class="t-badge danger">${esc(r.cashierName)}</span></td>
-        <td>${renderItemsTable(r.items)}</td>
-        <td class="t-num">${r.totalQty}</td>
-        <td class="t-money danger">${fmtM(r.total)}</td>
-        <td class="t-num">${fmtD(r.timestamp)}</td>
-    </tr>`).join(''):'<tr><td colspan="7" class="empty-row">لا توجد مرتجعات</td></tr>';
+    $('#returns-log-count').textContent=f.length;$('#returns-log-total').textContent=fmtM(f.reduce((s,x)=>s+x.total,0));
+    $('#returns-log-tbody').innerHTML=f.length?f.map((r,i)=>`<tr><td class="t-num">${i+1}</td><td><code>${esc(r.invoiceNo)}</code></td><td><span class="t-badge danger">${esc(r.cashierName)}</span></td><td>${renderItemsTable(r.items)}</td><td class="t-num">${r.totalQty}</td><td class="t-money danger">${fmtM(r.total)}</td><td class="t-num">${fmtD(r.timestamp)}</td></tr>`).join(''):'<tr><td colspan="7" class="empty-row">لا توجد مرتجعات</td></tr>';
 }
 
 function updateHS(){const td=today();$('#hdr-sales-today').textContent=fmtM(dbState.sales.filter(s=>new Date(s.timestamp).toISOString().slice(0,10)===td).reduce((s,x)=>s+x.total,0));$('#hdr-returns-today').textContent=fmtM(dbState.returns.filter(r=>new Date(r.timestamp).toISOString().slice(0,10)===td).reduce((s,x)=>s+x.total,0));$('#hdr-products-count').textContent=dbState.products.length}
 
-function showAC(type,val){const dd=type==='pos'?$('#pos-ac-dropdown'):$('#ret-ac-dropdown');if(!val.trim()){dd.classList.remove('show');return[]}const lv=val.trim().toLowerCase();const m=dbState.products.filter(p=>p.name.toLowerCase().includes(lv)||(p.barcode&&String(p.barcode).includes(lv))).slice(0,5);if(m.length){dd.innerHTML=m.map(p=>`<div class="ac-item" onclick="${type}Add('${p.barcode?p.barcode.replace(/'/g,"\\'"):p.name.replace(/'/g,"\\'")}')"><span class="ac-name">${esc(p.name)}</span><span class="ac-meta"><span>${fmtM(p.price)}</span><code>${esc(p.barcode||'—')}</code></span></div>`).join('');dd.classList.add('show')}else dd.classList.remove('show');return m}
+function showAC(type,val){const dd=type==='pos'?$('#pos-ac-dropdown'):$('#ret-ac-dropdown');if(!val.trim()){dd.classList.remove('show');return[]}const lv=val.trim().toLowerCase();const m=dbState.products.filter(p=>p.name.toLowerCase().includes(lv)||(p.barcode&&String(p.barcode).includes(lv))).slice(0,5);if(m.length){dd.innerHTML=m.map(p=>`<div class="ac-item" onclick="${type}Add('${p.barcode?p.barcode.split(',')[0].trim().replace(/'/g,"\\'"):p.name.replace(/'/g,"\\'")}')"><span class="ac-name">${esc(p.name)}</span><span class="ac-meta"><span>${fmtM(p.price)}</span><code>${esc(p.barcode||'—')}</code></span></div>`).join('');dd.classList.add('show')}else dd.classList.remove('show');return m}
 function hideAC(type){const dd=type==='pos'?$('#pos-ac-dropdown'):$('#ret-ac-dropdown');dd.classList.remove('show')}
 
 function readFI(input,cb){if(!input.files||!input.files[0]){toast('اختر ملفاً','warning');return}const f=input.files[0],r=new FileReader();r.onload=e=>cb(e.target.result,f.name);r.onerror=()=>toast('فشل القراءة','danger');r.readAsText(f,'utf-8')}
-function pImp(t){try{const rs=parseCSV(t);if(!rs.length){toast('الملف فارغ','warning');return}let add=0,skip=0,err=0;const np=[];rs.forEach(r=>{const n=(r[0]||'').trim(),p=cleanN(r[1]),b=(r[2]||'').trim();if(!n||p<=0){err++;return}if(b&&(productIndex.byBarcode.has(b)||np.some(x=>x.barcode===b))){skip++;return}if(!b&&(productIndex.byName.has(n.toLowerCase())||np.some(x=>x.name.toLowerCase()===n.toLowerCase()))){skip++;return}const pr={id:uid(),name:n,price:p,barcode:b};np.push(pr);add++});if(!np.length){toast(`لم تتم إضافة شيء. متكرر: ${skip}، أخطاء: ${err}`,'warning');return}dbState.products.push(...np);saveState();toast(`تم استيراد ${add} صنف. متكرر: ${skip}، أخطاء: ${err}`,'success',4000);beep();$('#import-file-input').value='';$('#import-file-zone').classList.remove('has-file');$('#import-file-zone .upload-text').textContent='اختر ملف CSV للاستيراد'}catch(e){toast('خطأ في CSV','danger')}}
-function pPriceUp(t){try{const rs=parseCSV(t);if(!rs.length){toast('الملف فارغ','warning');return}let up=0,nf=0,err=0,barUpd=0;rs.forEach(r=>{const n=(r[0]||'').trim(),p=cleanN(r[1]),b=(r[2]||'').trim();if(p<=0){err++;return}let pr=b?productIndex.byBarcode.get(b):null;if(!pr&&n)pr=productIndex.byName.get(n.toLowerCase());if(!pr){nf++;return}pr.price=p;up++;if(!pr.barcode&&b){pr.barcode=b;barUpd++;}});if(!up){toast(`لم يتم تحديث شيء. غير موجود: ${nf}`,'warning');return}saveState();toast(`تم تحديث ${up} سعر. تم إضافة باركود لـ ${barUpd} صنف. غير موجود: ${nf}`,'success',4000);beep();$('#price-file-input').value='';$('#price-file-zone').classList.remove('has-file');$('#price-file-zone .upload-text').textContent='اختر ملف CSV لتحديث الأسعار'}catch(e){toast('خطأ في CSV','danger')}}
-function dlSample(){downloadF('sample.csv',toCSV([['مياه معدنية',3.5,'600123'],['عصير',8,''],['خبز',5,'600125']]));toast('تم التحميل','success')}
+
+function pImp(t){
+  try{
+    const rs=parseCSV(t);if(!rs.length){toast('الملف فارغ','warning');return}
+    let add=0,skip=0,err=0;const np=[];
+    const allNewCodes = []; // لتتبع الباركودات داخل الملف نفسه
+    
+    rs.forEach(r=>{
+      const n=(r[0]||'').trim(),p=cleanN(r[1]),b=(r[2]||'').trim();
+      if(!n||p<=0){err++;return}
+      
+      const codes = b ? b.split(',').map(c=>c.trim()).filter(c=>c!=='') : [];
+      let isDuplicate = false;
+      
+      for(let code of codes){
+        if(productIndex.byBarcode.has(code) || allNewCodes.includes(code)){
+          isDuplicate = true; break;
+        }
+      }
+      
+      if(isDuplicate){skip++;return}
+      if(!b && (productIndex.byName.has(n.toLowerCase()) || np.some(x => x.name.toLowerCase() === n.toLowerCase()))){skip++;return}
+      
+      const pr={id:uid(),name:n,price:p,barcode:b};
+      np.push(pr);
+      codes.forEach(code => allNewCodes.push(code)); // إضافة الباركودات للقائمة
+      add++;
+    });
+    
+    if(!np.length){toast(`لم تتم إضافة شيء. متكرر: ${skip}، أخطاء: ${err}`,'warning');return}
+    dbState.products.push(...np);
+    rebuildIndex();
+    saveState();
+    toast(`تم استيراد ${add} صنف. متكرر: ${skip}، أخطاء: ${err}`,'success',4000);beep();
+    $('#import-file-input').value='';$('#import-file-zone').classList.remove('has-file');$('#import-file-zone .upload-text').textContent='اختر ملف CSV للاستيراد'
+  }catch(e){toast('خطأ في CSV','danger')}
+}
+
+function pPriceUp(t){
+  try{
+    const rs=parseCSV(t);if(!rs.length){toast('الملف فارغ','warning');return}
+    let up=0,nf=0,err=0,barUpd=0;
+    
+    rs.forEach(r=>{
+      const n=(r[0]||'').trim(),p=cleanN(r[1]),b=(r[2]||'').trim();
+      if(p<=0){err++;return}
+      
+      let pr = null;
+      // البحث في كل الباركودات الموجودة في الملف
+      if(b){
+        const codes = b.split(',').map(c=>c.trim()).filter(c=>c!=='');
+        for(let code of codes){
+          pr = productIndex.byBarcode.get(code);
+          if(pr) break;
+        }
+      }
+      
+      // إذا لم يجده بالباركود، يبحث بالاسم
+      if(!pr && n) pr = productIndex.byName.get(n.toLowerCase());
+      
+      if(!pr){nf++;return}
+      
+      pr.price = p;
+      up++;
+    });
+    
+    if(!up){toast(`لم يتم تحديث شيء. غير موجود: ${nf}`,'warning');return}
+    saveState();
+    toast(`تم تحديث ${up} سعر.`,'success',4000);beep();
+    $('#price-file-input').value='';$('#price-file-zone').classList.remove('has-file');$('#price-file-zone .upload-text').textContent='اختر ملف CSV لتحديث الأسعار'
+  }catch(e){toast('خطأ في CSV','danger')}
+}
+
+function dlSample(){downloadF('sample.csv',toCSV([['مياه معدنية',3.5,'600123, 600124'],['عصير',8,''],['خبز',5,'600125']]));toast('تم التحميل','success')}
+
+// Backup Functions
+function expAll(){downloadF(`backup_${today()}.json`,JSON.stringify(dbState,null,2),'application/json');toast('تم تصدير النسخة الاحتياطية','success')}
+function impAll(file){const r=new FileReader();r.onload=e=>{try{const p=JSON.parse(e.target.result);if(!p.cashiers||!p.products){toast('ملف غير صالح','danger');return}confirmM('استيراد','استبدال البيانات الحالية بالكامل بالنسخة الاحتياطية؟','استيراد','btn-warning').then(ok=>{if(!ok)return;dbState={cashiers:p.cashiers,products:p.products||[],sales:p.sales||[],returns:p.returns||[]};rebuildIndex();saveState();renderAll();toast('تم الاستيراد بنجاح','success');beep()})}catch(err){toast('ملف تالف','danger')}};r.readAsText(file,'utf-8')}
+function clrAll(){
+  const passAttempt = prompt("تحذير! سيتم مسح جميع الأصناف والمبيعات والمرتجعات نهائياً.\nللتأكيد، أدخل كلمة مرور المدير:");
+  if (passAttempt === null) return;
+  const admin = dbState.cashiers.find(c => c.role === 'admin');
+  if (!admin || passAttempt !== admin.password) {
+    toast("كلمة المرور غير صحيحة. تم إلغاء العملية.", "danger");
+    return;
+  }
+  confirmM('تأكيد نهائي', 'هل أنت متأكد تماماً؟ سيتم مسح كل الأصناف والمبيعات ولا يمكن التراجع.', 'نعم، امسح كل شيء', 'btn-danger').then(ok => {
+    if(!ok) return;
+    dbState.products = [];
+    dbState.sales = [];
+    dbState.returns = [];
+    saveState();
+    renderAll();
+    toast('تم مسح جميع البيانات بنجاح', 'success');
+    beep('warning');
+  });
+}
 
 function renderAll(){rebuildIndex();renderCT();renderFilters();renderC();renderRC();renderPUS();renderRUR();renderSL();renderRL();renderPL();updateHS();const a=getC();$('#pos-user-name').textContent=a?a.name:'—';$('#ret-user-name').textContent=a?a.name:'—'}
 
@@ -871,6 +981,10 @@ function bindEvents(){
   $('#import-csv-btn').addEventListener('click',()=>readFI($('#import-file-input'),pImp));$('#download-sample-csv').addEventListener('click',dlSample);
   $('#price-file-input').addEventListener('change',e=>{const z=$('#price-file-zone');if(e.target.files[0]){z.classList.add('has-file');z.querySelector('.upload-text').textContent=e.target.files[0].name}else{z.classList.remove('has-file')}});
   $('#update-prices-btn').addEventListener('click',()=>readFI($('#price-file-input'),pPriceUp));
+  $('#export-all-btn').addEventListener('click',expAll);
+  $('#import-all-btn').addEventListener('click',()=>$('#import-all-input').click());
+  $('#import-all-input').addEventListener('change',e=>{if(e.target.files[0])impAll(e.target.files[0]);e.target.value=''});
+  $('#clear-all-btn').addEventListener('click',clrAll);
   document.addEventListener('click',e=>{if(!e.target.closest('.scan-container')){hideAC('pos');hideAC('ret')}});
 }
 
