@@ -72,6 +72,7 @@
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-secondary { background: var(--secondary); color: #fff; }
+    .btn-warning { background: var(--warning); color: #0f172a; }
     .btn-outline { background: transparent; color: var(--text-color); border-color: var(--border-color); }
     .btn-danger { background: var(--danger); color: #fff; }
     .form-input, .form-select, .form-textarea { width: 100%; padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-color); font-family: inherit; font-size: 0.92rem; }
@@ -188,11 +189,11 @@
         <div class="glass-panel" style="padding: 2.5rem; border-radius: var(--radius-lg); text-align: center;">
           <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.75rem;"><i class="fa-solid fa-user-shield"></i></div>
           <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.4rem;">تسجيل دخول الإدارة</h2>
-          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">أدخل رقم الهاتف وكلمة المرور الخاصة بك</p>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">أدخل رقم الهاتف أو اسم المستخدم وكلمة المرور الخاصة بك</p>
           
           <form id="adminLoginForm" style="display: flex; flex-direction: column; gap: 1rem; text-align: start;">
             <div style="display: flex; flex-direction: column; gap: 0.35rem;">
-              <label style="font-size: 0.85rem; font-weight: 600;">رقم الهاتف</label>
+              <label style="font-size: 0.85rem; font-weight: 600;">اسم المستخدم / رقم الهاتف</label>
               <input type="text" id="adminPhoneInput" class="form-input" placeholder="01070800664" required />
             </div>
             <div style="display: flex; flex-direction: column; gap: 0.35rem;">
@@ -206,8 +207,8 @@
 
       <div id="adminDashboardCard" class="hidden" style="display: flex; flex-direction: column; gap: 1.25rem;">
         <div class="glass-panel" style="padding: 1.5rem; border-radius: var(--radius-lg); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <span style="background: var(--primary); color: #fff; padding: 0.35rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">مدير النظام السحابي</span>
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <span id="adminRoleBadge" style="background: var(--primary); color: #fff; padding: 0.35rem 0.8rem; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">مدير النظام السحابي</span>
             <span id="statCategoriesCount" style="font-size: 0.85rem; padding: 0.35rem 0.75rem; border-radius: 6px; background: var(--input-bg); border: 1px solid var(--border-color);">الأقسام: 0</span>
             <span id="statProductsCount" style="font-size: 0.85rem; padding: 0.35rem 0.75rem; border-radius: 6px; background: var(--input-bg); border: 1px solid var(--border-color);">المنتجات: 0</span>
           </div>
@@ -216,6 +217,22 @@
             <button class="btn btn-primary btn-sm" id="openAddProductModalBtn"><i class="fa-solid fa-circle-plus"></i> إضافة منتج</button>
             <button class="btn btn-outline btn-sm" id="exportExcelBtn"><i class="fa-solid fa-file-excel"></i> تصدير إكسل</button>
             <button class="btn btn-danger btn-sm" id="adminLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+          </div>
+        </div>
+
+        <!-- أزرار التحكم الخاصة بالمدير الرئيسي فقط -->
+        <div id="superAdminControlsPanel" class="glass-panel hidden" style="padding: 1.25rem 1.5rem; border-radius: var(--radius-lg); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; border-color: rgba(245, 158, 11, 0.35);">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <i class="fa-solid fa-crown" style="color: var(--warning); font-size: 1.2rem;"></i>
+            <div>
+              <h3 style="font-size: 1rem; font-weight: 700;">إدارة المديرين والصلاحيات</h3>
+              <p style="font-size: 0.78rem; color: var(--text-muted);">متاح للمدير الرئيسي فقط للتحكم في حسابات الإدارة</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm" id="openAddAdminModalBtn"><i class="fa-solid fa-user-plus"></i> إضافة مدير</button>
+            <button class="btn btn-primary btn-sm" id="openEditSubAdminModalBtn"><i class="fa-solid fa-user-pen"></i> تعديل بيانات مدير</button>
+            <button class="btn btn-warning btn-sm" id="openEditSuperAdminModalBtn"><i class="fa-solid fa-user-gear"></i> تعديل المدير الرئيسي</button>
           </div>
         </div>
 
@@ -276,6 +293,93 @@
     </div>
   </div>
 
+  <!-- Modal 1: إضافة مدير جديد -->
+  <div class="modal-backdrop hidden" id="addAdminModal">
+    <div class="modal-card glass-panel">
+      <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-user-plus" style="color: var(--secondary);"></i> إضافة مدير جديد</h3>
+      <form id="addAdminForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">الاسم الكامل للمدير *</label>
+          <input type="text" id="newAdminNameInput" class="form-input" placeholder="مثال: محمد أحمد" required />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">اسم المستخدم / رقم الهاتف للدخول *</label>
+          <input type="text" id="newAdminPhoneInput" class="form-input" placeholder="مثال: 01012345678" required />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">كلمة المرور *</label>
+          <input type="text" id="newAdminPassInput" class="form-input" placeholder="أدخل كلمة المرور..." required />
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-outline btn-sm" data-close-modal>إلغاء</button>
+          <button type="submit" class="btn btn-secondary btn-sm">إضافة المدير</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: تعديل اسم المستخدم وكلمة المرور للمديرين -->
+  <div class="modal-backdrop hidden" id="editSubAdminModal">
+    <div class="modal-card glass-panel">
+      <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-user-pen" style="color: var(--primary);"></i> تعديل بيانات المديرين</h3>
+      <form id="editSubAdminForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">اختر المدير المراد تعديله *</label>
+          <select id="selectSubAdminDropdown" class="form-select" required></select>
+        </div>
+        <div id="subAdminFieldsWrap" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <label style="font-size: 0.85rem; font-weight: 600;">الاسم *</label>
+            <input type="text" id="editSubAdminNameInput" class="form-input" required />
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <label style="font-size: 0.85rem; font-weight: 600;">اسم المستخدم / رقم الهاتف *</label>
+            <input type="text" id="editSubAdminPhoneInput" class="form-input" required />
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <label style="font-size: 0.85rem; font-weight: 600;">كلمة المرور الجديدة *</label>
+            <input type="text" id="editSubAdminPassInput" class="form-input" required />
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" class="btn btn-danger btn-sm" id="deleteSubAdminBtn"><i class="fa-solid fa-trash"></i> حذف هذا المدير</button>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-outline btn-sm" data-close-modal>إلغاء</button>
+              <button type="submit" class="btn btn-primary btn-sm">حفظ التعديلات</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: تعديل اسم المستخدم وكلمة المرور للمدير الرئيسي -->
+  <div class="modal-backdrop hidden" id="editSuperAdminModal">
+    <div class="modal-card glass-panel">
+      <button class="modal-close" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-crown" style="color: var(--warning);"></i> تعديل بيانات المدير الرئيسي</h3>
+      <form id="editSuperAdminForm" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">اسم المدير الرئيسي *</label>
+          <input type="text" id="superAdminNameInput" class="form-input" required />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">اسم المستخدم / رقم الهاتف *</label>
+          <input type="text" id="superAdminPhoneInput" class="form-input" required />
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">كلمة المرور الجديدة *</label>
+          <input type="text" id="superAdminPassInput" class="form-input" required />
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-outline btn-sm" data-close-modal>إلغاء</button>
+          <button type="submit" class="btn btn-warning btn-sm">حفظ بيانات المدير الرئيسي</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const DEFAULT_DATA = {
       categories: [
@@ -286,12 +390,18 @@
         { id: "prod_1", parentId: "cat_1", name: "جل عملاق لإزالة الدهون", description: "تركيبة مركزة للغاية تقضي على الدهون المتراكمة.", usage: "يوضع على السطح البارد ثم يمسح.", suitability: "للاستانلس والسيراميك.", notes: "ارتد قفازات.", image: "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?auto=format&fit=crop&w=600&q=80" }
       ],
       admins: [
-        { name: "المدير (أحمد عباس)", phone: "01070800664", pass: "Ahmedabbasqlz" }
+        { id: "admin_main", name: "المدير (أحمد عباس)", phone: "01070800664", pass: "Ahmedabbasqlz", isMain: true }
       ]
     };
 
-    let cloudData = { categories: [], products: [] };
+    let cloudData = { categories: [], products: [], admins: [] };
     let appState = { currentCategory: 'root', searchQuery: '', typeFilter: 'all', theme: 'dark' };
+
+    function saveLocalBackup() {
+      try {
+        localStorage.setItem('abu_samra_db', JSON.stringify(cloudData));
+      } catch (e) {}
+    }
 
     async function loadDataFromCloud() {
       if (!window.firebaseEnabled) return;
@@ -299,11 +409,14 @@
         const { collection, getDocs } = window.firebaseFns;
         const catSnap = await getDocs(collection(window.db, "categories"));
         const prodSnap = await getDocs(collection(window.db, "products"));
+        const adminSnap = await getDocs(collection(window.db, "admins"));
         
         let cats = [];
         catSnap.forEach(doc => cats.push(doc.data()));
         let prods = [];
         prodSnap.forEach(doc => prods.push(doc.data()));
+        let adminsList = [];
+        adminSnap.forEach(doc => adminsList.push(doc.data()));
 
         if (cats.length > 0 || prods.length > 0) {
           cloudData.categories = cats;
@@ -319,8 +432,19 @@
           cloudData.categories = DEFAULT_DATA.categories;
           cloudData.products = DEFAULT_DATA.products;
         }
+
+        if (adminsList.length > 0) {
+          cloudData.admins = adminsList;
+        } else {
+          for (let adm of DEFAULT_DATA.admins) {
+            await window.firebaseFns.setDoc(window.firebaseFns.doc(window.db, "admins", adm.id), adm);
+          }
+          cloudData.admins = [...DEFAULT_DATA.admins];
+        }
+
+        saveLocalBackup();
         renderCatalog();
-        if (window.location.hash === '#admin') renderDashboard();
+        if (window.location.hash === '#admin') checkAdminLoginState();
       } catch (err) {
         console.error("Cloud load error, fallback to local", err);
       }
@@ -329,7 +453,17 @@
     window.addEventListener('firebase-ready', loadDataFromCloud);
 
     function getActiveData() {
-      if (cloudData.categories.length > 0 || cloudData.products.length > 0) {
+      if (cloudData.categories.length > 0 || cloudData.products.length > 0 || cloudData.admins.length > 0) {
+        if (!cloudData.admins || cloudData.admins.length === 0) {
+          const local = localStorage.getItem('abu_samra_db');
+          if (local) {
+            try {
+              const parsed = JSON.parse(local);
+              if (parsed.admins && parsed.admins.length > 0) cloudData.admins = parsed.admins;
+            } catch(e){}
+          }
+          if (!cloudData.admins || cloudData.admins.length === 0) cloudData.admins = [...DEFAULT_DATA.admins];
+        }
         return cloudData;
       }
       const local = localStorage.getItem('abu_samra_db');
@@ -363,11 +497,38 @@
 
     window.addEventListener('hashchange', router);
 
+    function isSuperAdminUser(adminObj) {
+      if (!adminObj) return false;
+      return adminObj.isMain === true || adminObj.id === 'admin_main';
+    }
+
     function checkAdminLoginState() {
-      const activeAdmin = localStorage.getItem('abu_samra_active_admin');
-      if (activeAdmin) {
+      const activeAdminStr = localStorage.getItem('abu_samra_active_admin');
+      if (activeAdminStr) {
+        let activeAdmin = JSON.parse(activeAdminStr);
+        const dbObj = getActiveData();
+        // تحديث بيانات المدير الحالي إذا تم تعديلها
+        if (dbObj.admins && dbObj.admins.length > 0) {
+          const freshAdmin = dbObj.admins.find(a => (a.id && activeAdmin.id && a.id === activeAdmin.id) || (a.phone === activeAdmin.phone && a.pass === activeAdmin.pass));
+          if (freshAdmin) {
+            activeAdmin = freshAdmin;
+            localStorage.setItem('abu_samra_active_admin', JSON.stringify(freshAdmin));
+          }
+        }
+
         adminLoginCard.classList.add('hidden');
         adminDashboardCard.classList.remove('hidden');
+
+        const roleBadge = document.getElementById('adminRoleBadge');
+        const superPanel = document.getElementById('superAdminControlsPanel');
+        if (isSuperAdminUser(activeAdmin)) {
+          roleBadge.innerHTML = `<i class="fa-solid fa-crown"></i> المدير الرئيسي: ${activeAdmin.name}`;
+          superPanel.classList.remove('hidden');
+        } else {
+          roleBadge.textContent = `مدير: ${activeAdmin.name}`;
+          superPanel.classList.add('hidden');
+        }
+
         renderDashboard();
       } else {
         adminLoginCard.classList.remove('hidden');
@@ -380,13 +541,14 @@
       const phone = document.getElementById('adminPhoneInput').value.trim();
       const pass = document.getElementById('adminPasswordInput').value.trim();
       const dbObj = getActiveData();
-      const admin = dbObj.admins ? dbObj.admins.find(a => a.phone === phone && a.pass === pass) : DEFAULT_DATA.admins.find(a => a.phone === phone && a.pass === pass);
+      const adminsList = (dbObj.admins && dbObj.admins.length > 0) ? dbObj.admins : DEFAULT_DATA.admins;
+      const admin = adminsList.find(a => a.phone === phone && a.pass === pass);
       if (admin) {
         localStorage.setItem('abu_samra_active_admin', JSON.stringify(admin));
         showToast('تم تسجيل الدخول بنجاح', 'success');
         checkAdminLoginState();
       } else {
-        showToast('رقم الهاتف أو كلمة المرور خطأ!', 'danger');
+        showToast('اسم المستخدم أو كلمة المرور خطأ!', 'danger');
       }
     });
 
@@ -394,6 +556,189 @@
       localStorage.removeItem('abu_samra_active_admin');
       checkAdminLoginState();
       showToast('تم تسجيل الخروج', 'info');
+    });
+
+    // === إدارة المديرين (إضافة / تعديل مدير / تعديل المدير الرئيسي) ===
+    async function syncAdminsToCloud(adminsArray) {
+      cloudData.admins = adminsArray;
+      saveLocalBackup();
+      if (window.firebaseEnabled) {
+        try {
+          for (let adm of adminsArray) {
+            await window.firebaseFns.setDoc(window.firebaseFns.doc(window.db, "admins", adm.id), adm);
+          }
+        } catch(e) { console.error("Admin sync error", e); }
+      }
+    }
+
+    // 1. فتح نافذة إضافة مدير
+    document.getElementById('openAddAdminModalBtn').addEventListener('click', () => {
+      document.getElementById('addAdminForm').reset();
+      document.getElementById('addAdminModal').classList.remove('hidden');
+    });
+
+    document.getElementById('addAdminForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('newAdminNameInput').value.trim();
+      const phone = document.getElementById('newAdminPhoneInput').value.trim();
+      const pass = document.getElementById('newAdminPassInput').value.trim();
+
+      const dbObj = getActiveData();
+      const adminsList = [...(dbObj.admins || DEFAULT_DATA.admins)];
+
+      if (adminsList.some(a => a.phone === phone)) {
+        showToast('اسم المستخدم أو رقم الهاتف مستخدم بالفعل!', 'danger');
+        return;
+      }
+
+      const newAdmin = {
+        id: 'admin_' + Date.now(),
+        name,
+        phone,
+        pass,
+        isMain: false
+      };
+
+      adminsList.push(newAdmin);
+      await syncAdminsToCloud(adminsList);
+      document.getElementById('addAdminModal').classList.add('hidden');
+      showToast('تم إضافة المدير بنجاح', 'success');
+    });
+
+    // 2. فتح نافذة تعديل بيانات المديرين الفرعيين
+    function populateSubAdminSelect() {
+      const dbObj = getActiveData();
+      const adminsList = dbObj.admins || [];
+      const subAdmins = adminsList.filter(a => !isSuperAdminUser(a));
+      const selectEl = document.getElementById('selectSubAdminDropdown');
+      const wrapEl = document.getElementById('subAdminFieldsWrap');
+
+      selectEl.innerHTML = '';
+      if (subAdmins.length === 0) {
+        selectEl.innerHTML = `<option value="">لا يوجد مديرون مضافون حالياً</option>`;
+        wrapEl.classList.add('hidden');
+        return;
+      }
+
+      wrapEl.classList.remove('hidden');
+      subAdmins.forEach(adm => {
+        selectEl.innerHTML += `<option value="${adm.id}">${adm.name} (${adm.phone})</option>`;
+      });
+
+      fillSubAdminEditFields(subAdmins[0].id);
+    }
+
+    function fillSubAdminEditFields(adminId) {
+      const dbObj = getActiveData();
+      const adm = (dbObj.admins || []).find(a => a.id === adminId);
+      if (adm) {
+        document.getElementById('editSubAdminNameInput').value = adm.name;
+        document.getElementById('editSubAdminPhoneInput').value = adm.phone;
+        document.getElementById('editSubAdminPassInput').value = adm.pass;
+      }
+    }
+
+    document.getElementById('openEditSubAdminModalBtn').addEventListener('click', () => {
+      populateSubAdminSelect();
+      document.getElementById('editSubAdminModal').classList.remove('hidden');
+    });
+
+    document.getElementById('selectSubAdminDropdown').addEventListener('change', (e) => {
+      fillSubAdminEditFields(e.target.value);
+    });
+
+    document.getElementById('editSubAdminForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const selectedId = document.getElementById('selectSubAdminDropdown').value;
+      if (!selectedId) return;
+
+      const name = document.getElementById('editSubAdminNameInput').value.trim();
+      const phone = document.getElementById('editSubAdminPhoneInput').value.trim();
+      const pass = document.getElementById('editSubAdminPassInput').value.trim();
+
+      const dbObj = getActiveData();
+      const adminsList = [...(dbObj.admins || [])];
+
+      if (adminsList.some(a => a.phone === phone && a.id !== selectedId)) {
+        showToast('اسم المستخدم أو رقم الهاتف مستخدم لمدير آخر!', 'danger');
+        return;
+      }
+
+      const idx = adminsList.findIndex(a => a.id === selectedId);
+      if (idx >= 0) {
+        adminsList[idx] = { ...adminsList[idx], name, phone, pass };
+        await syncAdminsToCloud(adminsList);
+        document.getElementById('editSubAdminModal').classList.add('hidden');
+        showToast('تم تعديل بيانات المدير بنجاح', 'success');
+      }
+    });
+
+    document.getElementById('deleteSubAdminBtn').addEventListener('click', async () => {
+      const selectedId = document.getElementById('selectSubAdminDropdown').value;
+      if (!selectedId) return;
+      if (!confirm('هل أنت متأكد من حذف هذا المدير؟')) return;
+
+      const dbObj = getActiveData();
+      const updatedList = (dbObj.admins || []).filter(a => a.id !== selectedId);
+      cloudData.admins = updatedList;
+      saveLocalBackup();
+
+      if (window.firebaseEnabled) {
+        try {
+          await window.firebaseFns.deleteDoc(window.firebaseFns.doc(window.db, "admins", selectedId));
+        } catch(e) {}
+      }
+
+      populateSubAdminSelect();
+      showToast('تم حذف المدير بنجاح', 'success');
+    });
+
+    // 3. فتح نافذة تعديل المدير الرئيسي
+    document.getElementById('openEditSuperAdminModalBtn').addEventListener('click', () => {
+      const dbObj = getActiveData();
+      const adminsList = dbObj.admins || DEFAULT_DATA.admins;
+      const superAdmin = adminsList.find(a => isSuperAdminUser(a)) || adminsList[0];
+
+      document.getElementById('superAdminNameInput').value = superAdmin.name;
+      document.getElementById('superAdminPhoneInput').value = superAdmin.phone;
+      document.getElementById('superAdminPassInput').value = superAdmin.pass;
+      document.getElementById('editSuperAdminModal').classList.remove('hidden');
+    });
+
+    document.getElementById('editSuperAdminForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('superAdminNameInput').value.trim();
+      const phone = document.getElementById('superAdminPhoneInput').value.trim();
+      const pass = document.getElementById('superAdminPassInput').value.trim();
+
+      const dbObj = getActiveData();
+      let adminsList = [...(dbObj.admins || DEFAULT_DATA.admins)];
+      const mainIdx = adminsList.findIndex(a => isSuperAdminUser(a));
+
+      if (adminsList.some((a, i) => a.phone === phone && i !== mainIdx)) {
+        showToast('اسم المستخدم أو رقم الهاتف مستخدم لمدير آخر!', 'danger');
+        return;
+      }
+
+      const updatedSuperAdmin = {
+        id: mainIdx >= 0 ? (adminsList[mainIdx].id || 'admin_main') : 'admin_main',
+        name,
+        phone,
+        pass,
+        isMain: true
+      };
+
+      if (mainIdx >= 0) {
+        adminsList[mainIdx] = updatedSuperAdmin;
+      } else {
+        adminsList.unshift(updatedSuperAdmin);
+      }
+
+      await syncAdminsToCloud(adminsList);
+      localStorage.setItem('abu_samra_active_admin', JSON.stringify(updatedSuperAdmin));
+      document.getElementById('editSuperAdminModal').classList.add('hidden');
+      checkAdminLoginState();
+      showToast('تم تحديث بيانات المدير الرئيسي بنجاح', 'success');
     });
 
     const catalogGrid = document.getElementById('catalogGrid');
